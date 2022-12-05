@@ -10,5 +10,6 @@ Two problems/puzzles per day are available from Dec 1 - 25.
 File name `aoc0102.py` means the first day's second puzzle solution. 
 
 My input files needed to solve the puzzles are stored in the input directory.
+`input03.txt` means the input for day 3.
 
 Python is used for all the solutions so far.
