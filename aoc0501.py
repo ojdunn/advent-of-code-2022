@@ -21,7 +21,7 @@ for i in range(len(lines)):
         # print(crate, end='')
         # All but last crate in input is 4 chars long: '[A] '
         pos += 4
-        # crate.isspace() is not True and
+        # not needed for this data: crate.isspace() is not True and
         if crate[1].isalpha():
             stacks[n].append(crate[1])
         # numeric and 1 blank line before instructions
@@ -60,6 +60,7 @@ for i in range(len(lines)):
                     print("Not enough crates in stack %s" % source)
                 # END PART 2
 
+                # Processed last line already - don't continue
                 if k == len(lines) - 1:
                     # Print top of stack
                     topStack = ''
