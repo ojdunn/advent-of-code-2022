@@ -5,7 +5,7 @@ Find sum of all directories in file system with less than or equal to max_size s
 Commands of cd dir_name and ls are used to build a file tree.
 """
 def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
-    tree_fs = {'/': {'d': {}, 'f': {}}}  # file system tree
+    # tree_fs = {'/': {'d': {}, 'f': {}}}  # file system tree
     depth_fs = 0  # root is depth 0
     depth_max = 0
     # dirs stored in format:
@@ -13,6 +13,7 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
     #              'f': [(size, file_name1), .., (size, file_nameN)],
     #              'depth': <int>}  # depth in file system past root (root = 0)
     dirs = {}  # keys are dirs, values are contained dirs and files
+    full_path = ['/']
     i = 0
     read_next = True
     while i < len(cmds):
@@ -33,26 +34,12 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                 if tokens[2] == '/':
                     depth_fs = 0
                     cur_dir = '/'
-                    print('pwd: %s' % cur_dir)
+                    full_path = ['/']
                 # Move out one level
                 elif tokens[2] == '..':
                     if cur_dir != '/':
                         depth_fs -= 1
-                        # find parent dir of current dir
-                        # print(dirs.keys())
-                        if len(dirs.keys()) > 0:
-                            fount_parent = False
-                            for directory, dir_data in dirs.items():
-                                # if dir contains current dir
-                                if cur_dir in dir_data['d']:
-                                    cur_dir = directory
-                                    fount_parent = True
-                                    print('pwd: %s' % cur_dir)
-                                    break
-                            if not fount_parent:
-                                print('\n\nERROR: did not go out one level.\n\n')
-                        else:
-                            print('Parent directory not known')
+                        cur_dir = full_path.pop()
                     else:
                         print(i)
                         print('Already at root.')
@@ -62,6 +49,7 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                     depth_fs += 1
                     if depth_fs > depth_max:
                         depth_max = depth_fs
+                    full_path.append(cur_dir)
                     cur_dir = tokens[2]
                 i += 1
             # Read all dirs and files of current dir
@@ -83,12 +71,14 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                     # dir: add it to contained dirs of current dir
                     if tokens[0] == 'dir':
                         if tokens[1] == '/':
+                            print(i)
                             print('/ is root directory. It can\'t be in another '
                                   'directory!')
                         elif cur_dir in list(dirs):
                             if tokens[1] not in dirs[cur_dir]['d']:
                                 dirs[cur_dir]['d'].append(tokens[1])
                             else:
+                                print(i)
                                 print('%s contained in %s already' % (tokens[1], cur_dir))
                         else:
                             dirs[cur_dir] = {'d': [tokens[1]],
@@ -101,6 +91,7 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                             if (int(tokens[0]), tokens[1]) not in dirs[cur_dir]['f']:
                                 dirs[cur_dir]['f'].append((int(tokens[0]), tokens[1]))
                             else:
+                                print(i)
                                 print('File: %s already in directory' % tokens[1])
                         else:
                             dirs[cur_dir] = {'d': [],
@@ -110,34 +101,37 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                     i += 1
                     # end while
 
-    # Find total size of each dir
+    # Find total size of each dir (only files)
     for d in dirs:
         sum_files = 0
         for size, name in dirs[d]['f']:
             sum_files += size
+        # print('sf: %s, size: %d' % (d, sum_files))
         dirs[d]['sf'] = sum_files
-        dirs[d]['sd'] = 0
+        dirs[d]['s'] = 0
 
     # Find sum including directories
     # print('depth max: %s' % depth_max)
     for i in reversed(range(0, depth_max + 1)):
-        sum_dirs = 0
         for d in dirs:
             if dirs[d]['depth'] == i:
                 # Add all directories file sizes contained in this dir
                 # print('%s: ' % d, end='')
-                for d_in in dirs[d]['d']:
-                    # print('%s, ' % d_in, end='')
-                    sum_dirs += dirs[d_in]['sf'] + dirs[d_in]['sd']
+                sum_dirs = 0
+                if len(dirs[d]['d']) > 0:
+                    for d_in in dirs[d]['d']:
+                        # print('%s, ' % d_in, end='')
+                        sum_dirs += dirs[d_in]['s']
+                    dirs[d]['s'] = sum_dirs + dirs[d]['sf']
+                else:
+                    dirs[d]['s'] = dirs[d]['sf']
                 # print()
-                print('d: %s, ds: %s' % (d, sum_dirs))
-                dirs[d]['sd'] = sum_dirs
+                # print('%s, size: %d' % (d, sum_dirs))
 
     sum_total = 0
     # Sum all directories <= max_size
     for d in dirs:
-        d_size = dirs[d]['sf'] + dirs[d]['sd']
-        dirs[d]['s'] = d_size
+        d_size = dirs[d]['s']
         # print("%s size: %s" % (d, d_size))
         if d_size < max_size:
             sum_total += d_size
@@ -147,7 +141,8 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
 
 
 """
-Find size of all contained files in a directory, including child directories.
+Find size of all contained files in a directory, including child directories. 
+Recursive solution.
 """
 # def dir_size(dirs: dict(), d: str, s: int) -> int:
 #     # find size of each dir files only
@@ -170,7 +165,7 @@ Find size of all contained files in a directory, including child directories.
 #     return s
 
 
-f = open("input/input.txt")
-# f = open("input/input07.txt")
+# f = open("input/input.txt")
+f = open("input/input07.txt")
 lines = f.readlines()
 print('Part 1: %i' % find_dir_less_size_sum(lines, 100000))
