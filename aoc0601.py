@@ -7,7 +7,8 @@ signal = f.read()  # get signal alpha text as one long string
 # unique_chars = 4
 # PART 2
 unique_chars = 14
-q = deque(signal[:unique_chars], unique_chars)  # queue of max length 4
+# queue of max length <unique_chars>
+q = deque(signal[:unique_chars], unique_chars)
 i = unique_chars
 while len(set(q)) != unique_chars:
     q.append(signal[i])
