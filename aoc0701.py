@@ -1,6 +1,9 @@
 #! python3
 
-def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
+"""
+Find size of each directory (includes files and dirs) and return in a dictionary.
+"""
+def find_dir_sizes(cmds: list[str]) -> dict():
     # dirs stored in format:
     # (('path', depth): {'d': [('child_path', child_depth), ..],
     #                    'f': [(file_name1, size), .., (size, file_nameN)],
@@ -83,8 +86,7 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
                                 {'d': [],
                                  'f': [(tokens[1], int(tokens[0]))]
                                  }
-                    # next line index
-                    i += 1
+                    i += 1  # next line index
                     # END while
 
     # Find total size of files for each dir
@@ -120,6 +122,34 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
     #             # print('%s, size: %d' % (d, sum_dirs))
     #     # print()
 
+    for path_key, depth in dirs:
+        size = find_dir_size(dirs, (path_key, depth))
+        dirs[(path_key, depth)]['s'] = size
+
+    return dirs
+
+
+"""
+Find a directory size including all files and directories. A directory contained may 
+have files and directories of its own. Recursion used.
+"""
+def find_dir_size(dirs: dict(), d: (str, int)):
+    fs = 0
+    for name, size in dirs[d]['f']:
+        fs += size
+    ds = 0
+    for child_path_key, depth_child in dirs[d]['d']:
+        ds += find_dir_size(dirs, (child_path_key, depth_child))
+    return fs + ds
+
+
+"""
+Silver
+Find sum of dirs less than max size.
+"""
+def find_sum_dirs_less_max(cmds: list[str], max_size: int) -> int:
+    dirs = find_dir_sizes(cmds)
+
     silver = 0
     for path_key, depth in dirs:
         size = find_dir_size(dirs, (path_key, depth))
@@ -133,20 +163,27 @@ def find_dir_less_size_sum(cmds: list[str], max_size: int) -> int:
 
 
 """
-Find the directory size including all files and directories. A directory contained may 
-have files and directories of its own. Recursion used.
+With a file system of size total_size and a needed space of size need_size, find the 
+smallest directory to delete that will leave you with need_size.
 """
-def find_dir_size(dirs: dict(), d: (str, int)):
-    fs = 0
-    for name, size in dirs[d]['f']:
-        fs += size
-    ds = 0
-    for child_path_key, depth_child in dirs[d]['d']:
-        ds += find_dir_size(dirs, (child_path_key, depth_child))
-    return fs + ds
+def find_smallest_del(cmds: list[str], file_system_size: int, need_size: int) -> int:
+    dirs = find_dir_sizes(cmds)
+
+    free_space = file_system_size - dirs[('/', 0)]['s']  # root includes all files and dirs
+    del_size = need_size - free_space
+
+    smallest_del_size = dirs[('/', 0)]['s']
+    for path_key, depth in dirs:
+        dir_size = dirs[(path_key, depth)]['s']
+        if dir_size >= del_size:
+            if dir_size < smallest_del_size:
+                smallest_del_size = dir_size
+
+    return smallest_del_size
 
 
-f = open("input/input07.txt", 'r')
-# f = open("input/input.txt")
+f = open('input/input07.txt', 'r')
+# f = open('input/input.txt', 'r')  # example input
 lines = f.readlines()
-print('silver: %i' % find_dir_less_size_sum(lines, 100000))
+print('silver: %i' % find_sum_dirs_less_max(lines, 100000))
+print('gold: %i' % find_smallest_del(lines, 70000000, 30000000))
