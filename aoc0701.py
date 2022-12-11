@@ -163,6 +163,7 @@ def find_sum_dirs_less_max(cmds: list[str], max_size: int) -> int:
 
 
 """
+Gold
 With a file system of size total_size and a needed space of size need_size, find the 
 smallest directory to delete that will leave you with need_size.
 """
