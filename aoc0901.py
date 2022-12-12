@@ -23,7 +23,7 @@ def update_tail_pos(head_prev_pos: (int, int),
                     tail_pos: (int, int)) -> (int, int):
     dx = head_pos[0] - tail_pos[0]
     dy = head_pos[1] - tail_pos[1]
-    # ((Same row or col) or (Not in same row or col (diagonal))) and (more than 1 apart)
+    # ((Same row or col) or (Not in same row or col (diagonal))) and (more than 1 apart in x or y)
     if ((dx == 0 or dy == 0) or (dx != 0 and dy != 0)) and (abs(dx) > 1 or abs(dy) > 1):
         tail_pos = (head_prev_pos[0], head_prev_pos[1])
 
