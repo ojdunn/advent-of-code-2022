@@ -20,7 +20,7 @@ def num_tail_pos(motions: list[str], num_knots: int) -> int:
     return len(tail_positions)
 
 
-def update_knots(knots: list[(int, int)], pos: int) -> (int, int):
+def update_knots(knots: list[(int, int)], pos: int):
     # Start with head knot, working backwards
     dx = knots[pos][0] - knots[pos + 1][0]
     dy = knots[pos][1] - knots[pos + 1][1]
