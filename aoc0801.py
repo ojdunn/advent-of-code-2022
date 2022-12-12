@@ -1,6 +1,6 @@
 #! python3
 
-def find_total_visible(grid: list[str]) -> (int, int):
+def find_total_visible(grid: list[str]) -> int:
     # Add all edge trees to count of visible trees
     # - grid lines end with \n, last line has no newline
     total_visible = ((len(grid[0]) - 2 - 1) * 2) + (len(grid) * 2)
@@ -51,6 +51,7 @@ def find_max_scenic_score(grid: list[str]) -> int:
     max_scenic_score = 0
     vd_up, vd_down, vd_left, vd_right = 0, 0, 0, 0
     i = 0
+    # For each tree not on edge, as scenic_score = 0 if on edge
     for r in range(1, rows - 1):
         for c in range(1, cols - 1):
             # For each tree, check up, down, left, right of grid to see if visible
@@ -76,8 +77,8 @@ def find_max_scenic_score(grid: list[str]) -> int:
                         vd_left += 1
                 elif direction == 'r':
                     vd_right = 1
-                    for i in range(c + 1, cols, 1) or i == cols - 1:
-                        if int(grid[r][i]) >= height:
+                    for i in range(c + 1, cols, 1):
+                        if int(grid[r][i]) >= height or i == cols - 1:
                             break
                         vd_right += 1
 
