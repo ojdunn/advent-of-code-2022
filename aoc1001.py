@@ -5,6 +5,7 @@ def sum_signal_strengths(instructs: list[str], max_num: int) -> int:
     cycle = 1       # cycle CPU is at
     num = 0         # number of signal strengths measured so far
     sig_strs = []   # recorded signal strengths
+    pos = 0         # horizontal position CRT is drawing now
     for instruct in instructs:
         instruct = instruct.split()
         if len(instruct) > 1:  # addx, takes effect after 2 cycles
@@ -18,11 +19,21 @@ def sum_signal_strengths(instructs: list[str], max_num: int) -> int:
             if cycle == 20 + 40 * num and num < max_num:
                 sig_strs.append(cycle * X)
                 num += 1
+            if X - 1 <= pos <= X + 1:
+                print('#', end='')
+            else:
+                print('.', end='')
+            if cycle % 40 == 0:
+                print()
+                pos = 0
+            else:
+                pos += 1
             cycle += 1
 
         if instruct[0] == 'addx':
             X += sval
 
+    print()
     return sum(sig_strs)
 
 
@@ -30,4 +41,4 @@ def sum_signal_strengths(instructs: list[str], max_num: int) -> int:
 f = open('input/input10.txt', 'r')
 lines = f.readlines()
 print('silver: %s' % sum_signal_strengths(lines, 6))
-# print('gold: %s' % )
+print('gold: see what capital letters are printed!')
