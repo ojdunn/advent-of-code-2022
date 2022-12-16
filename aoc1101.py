@@ -30,10 +30,12 @@ def find_monkey_business(info: list[str], rounds: int) -> int:
     # small enough to run program in reasonable time and not change results.
     # Another way to do this is to keep track of each value for each monkey and roll it
     # over when past its modulo. A different data structure is needed to do this.
+    #   see: Chinese remainder theorem
     super_modulo = 1
     # comment next 2 lines for part 1
     for m in monkeys:
         super_modulo *= monkeys[m]['t'][0]
+    print(super_modulo)
 
     # Play monkey in the middle for "rounds" rounds
     for r in range(rounds):
@@ -57,7 +59,7 @@ def find_monkey_business(info: list[str], rounds: int) -> int:
                         i += right_op
 
                 # Uncomment next line for part 1
-                # i //= 3  # Assign i to floor of divide by 3
+                i //= 3  # Assign i to floor of divide by 3
 
                 monkeys[m]['c'] += 1  # Increment item inspection count
 
@@ -83,5 +85,6 @@ def find_monkey_business(info: list[str], rounds: int) -> int:
 # f = open('input/input.txt', 'r')  # example input
 f = open('input/input11.txt', 'r')
 lines = f.readlines()
-# print('silver: %s' % find_monkey_business(lines, 20))  # Uncomment i //= 3 to get solution
-print('gold: %s' % find_monkey_business(lines, 10000))  # Slow: takes
+# to get solution: Uncomment i //= 3, comment super_modulo lines
+print('silver: %s' % find_monkey_business(lines, 20))
+# print('gold: %s' % find_monkey_business(lines, 10000))  # Slow: takes

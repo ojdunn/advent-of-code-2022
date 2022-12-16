@@ -12,5 +12,3 @@ Days with one file contain both puzzles for the day.
 
 My input files needed to solve the puzzles are stored in the input directory.
 `input03.txt` means the input for day 3.
-
-Python is used for all the solutions so far.
