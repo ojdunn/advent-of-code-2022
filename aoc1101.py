@@ -87,4 +87,4 @@ f = open('input/input11.txt', 'r')
 lines = f.readlines()
 # to get solution: Uncomment i //= 3, comment super_modulo lines
 print('silver: %s' % find_monkey_business(lines, 20))
-# print('gold: %s' % find_monkey_business(lines, 10000))  # Slow: takes
+# print('gold: %s' % find_monkey_business(lines, 10000))
